@@ -5,6 +5,8 @@ import {
   Clock,
   MapPin,
   XCircle,
+  UserCircle,
+  CreditCard,
 } from "lucide-react";
 
 function MyBookings({ bookings, onCancel }) {
@@ -95,7 +97,7 @@ function MyBookings({ bookings, onCancel }) {
                 </span>
               </div>
 
-              <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="flex items-center gap-3">
                   <CarFront className="text-blue-600" size={20} />
                   <div>
@@ -134,6 +136,44 @@ function MyBookings({ bookings, onCancel }) {
                       {booking.time}
                     </p>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <UserCircle className="text-blue-600" size={20} />
+                  <div>
+                    <p className="text-xs text-slate-400">User / Role</p>
+                    <p className="text-sm font-semibold text-slate-700">
+                      {booking.userId || "Previous User"} / {booking.userRole || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <CreditCard className="text-blue-600" size={20} />
+                  <div>
+                    <p className="text-xs text-slate-400">Duration</p>
+                    <p className="text-sm font-semibold text-slate-700">
+                      {booking.userRole === "Visitor"
+                        ? `${booking.durationHours} Hours`
+                        : "Free Parking"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-50 p-4">
+                <div>
+                  <p className="text-xs text-slate-400">Parking Amount</p>
+                  <p className="text-lg font-bold text-slate-900">
+                    ₹{booking.amount ?? 0}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-slate-400">Payment Status</p>
+                  <p className="text-sm font-semibold text-green-600">
+                    {booking.paymentStatus || "Not Available"}
+                  </p>
                 </div>
               </div>
 

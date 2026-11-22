@@ -16,7 +16,7 @@ const initialSlots = Array.from({ length: 20 }, (_, index) => ({
     : "Available",
 }));
 
-function Parking({ onBooking, bookings }) {
+function Parking({ onBooking, bookings, currentUser }) {
   const slots = initialSlots.map((slot) =>
     bookings.some(
       (booking) =>
@@ -26,9 +26,14 @@ function Parking({ onBooking, bookings }) {
       ? { ...slot, status: "Occupied" }
       : slot
   );
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [vehicleNumber, setVehicleNumber] = useState("");
-  const [booking, setBooking] = useState(null);
+const [selectedSlot, setSelectedSlot] = useState(null);
+const [vehicleNumber, setVehicleNumber] = useState("");
+const [booking, setBooking] = useState(null);
+const [durationHours, setDurationHours] = useState(1);
+
+const isVisitor = currentUser?.role === "Visitor";
+const parkingRate = 20;
+const totalAmount = isVisitor ? durationHours * parkingRate : 0;
 
   const availableCount = slots.filter(
     (slot) => slot.status === "Available"
@@ -39,6 +44,15 @@ function Parking({ onBooking, bookings }) {
       alert("Please select a parking slot and enter your vehicle number.");
       return;
     }
+    if (isVisitor) {
+  const paymentConfirmed = window.confirm(
+    `Visitor Parking Payment\n\nDuration: ${durationHours} hour(s)\nTotal Amount: ₹${totalAmount}\n\nConfirm simulated payment?`
+  );
+
+  if (!paymentConfirmed) {
+    return;
+  }
+}
 
 
 
@@ -49,6 +63,11 @@ const newBooking = {
   date: new Date().toLocaleDateString("en-IN"),
   time: "Campus parking session",
   status: "Active",
+  userId: currentUser.loginId,
+  userRole: currentUser.role,
+  durationHours: isVisitor ? durationHours : 0,
+  amount: totalAmount,
+paymentStatus: isVisitor ? "Paid (Demo)" : "Not Required",
 };
 
 setBooking(newBooking);
@@ -247,12 +266,57 @@ onBooking(newBooking);
                 Campus parking session
               </p>
             </div>
+            {isVisitor && (
+  <div>
+    <label className="mb-2 block text-sm font-medium text-slate-700">
+      Parking Duration (Hours)
+    </label>
+
+    <select
+      value={durationHours}
+      onChange={(e) => setDurationHours(Number(e.target.value))}
+      className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm"
+    >
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((hours) => (
+        <option key={hours} value={hours}>
+          {hours} {hours === 1 ? "Hour" : "Hours"}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
 
             <button
               onClick={handleBooking}
               disabled={!selectedSlot || !vehicleNumber.trim()}
               className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
             >
+              {isVisitor ? (
+  <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
+    <h3 className="font-semibold text-orange-800">
+      Visitor Parking Charges
+    </h3>
+
+    <div className="mt-3 flex justify-between text-sm text-slate-700">
+      <span>Rate per hour</span>
+      <span>₹20</span>
+    </div>
+
+    <div className="mt-2 flex justify-between text-sm text-slate-700">
+      <span>Duration</span>
+      <span>{durationHours} Hours</span>
+    </div>
+
+    <div className="mt-3 flex justify-between border-t border-orange-200 pt-3 font-bold text-orange-800">
+      <span>Total Amount</span>
+      <span>₹{totalAmount}</span>
+    </div>
+  </div>
+) : (
+  <div className="rounded-xl bg-green-50 p-4 text-sm font-semibold text-green-700">
+    {currentUser?.role} Parking — Free
+  </div>
+)}
               Confirm Booking
             </button>
           </div>

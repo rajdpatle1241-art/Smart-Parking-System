@@ -1,7 +1,7 @@
 
-import { Bell, Search, UserCircle, CalendarDays } from "lucide-react";
+import { UserCircle, CalendarDays, LogOut } from "lucide-react";
 
-function Header() {
+function Header({ currentUser, onLogout }) {
   const today = new Date().toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
@@ -19,31 +19,34 @@ function Header() {
         </p>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="flex flex-wrap items-center justify-end gap-4">
         <div className="hidden items-center gap-2 text-sm text-slate-500 sm:flex">
           <CalendarDays size={18} className="text-blue-500" />
           {today}
         </div>
 
-        <button className="relative rounded-xl border border-slate-200 p-3 text-slate-500 transition hover:bg-slate-100">
-          <Bell size={20} />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-blue-500" />
-        </button>
-
-        <div className="flex items-center gap-3 border-l border-slate-200 pl-5">
+        <div className="flex items-center gap-3 border-l border-slate-200 pl-4">
           <div className="rounded-full bg-blue-600 p-2 text-white">
             <UserCircle size={23} />
           </div>
 
-          <div className="hidden sm:block">
+          <div>
             <p className="text-sm font-semibold text-slate-900">
-              Student User
+              {currentUser?.loginId}
             </p>
             <p className="text-xs text-slate-500">
-              Campus Member
+              {currentUser?.role}
             </p>
           </div>
         </div>
+
+        <button
+          onClick={onLogout}
+          className="flex items-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white hover:bg-red-700"
+        >
+          <LogOut size={17} />
+          Logout
+        </button>
       </div>
     </header>
   );

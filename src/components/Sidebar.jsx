@@ -11,13 +11,17 @@ import {
 
 const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard },
-  { name: "Admin Dashboard", icon: LayoutDashboard },
+  { name: "Admin Dashboard", icon: LayoutDashboard, adminOnly: true },
   { name: "Find Parking", icon: CarFront },
   { name: "My Bookings", icon: CalendarCheck },
   { name: "Parking History", icon: History },
 ];
 
-function Sidebar({ activeTab, setActiveTab }) {
+function Sidebar({ activeTab, setActiveTab, currentUser }) {
+  const visibleMenuItems = menuItems.filter(
+    (item) => !item.adminOnly || currentUser?.role === "Admin"
+  );
+
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-slate-200 bg-white px-5 py-6">
       <div className="mb-10 flex items-center gap-3">
@@ -35,7 +39,7 @@ function Sidebar({ activeTab, setActiveTab }) {
       </p>
 
       <nav className="flex-1 space-y-2">
-        {menuItems.map((item) => {
+        {visibleMenuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.name;
 

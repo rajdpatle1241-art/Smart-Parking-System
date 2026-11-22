@@ -10,9 +10,31 @@ import {
 function AdminDashboard({ bookings }) {
   const totalSlots = 20;
 
-  const occupiedSlots = bookings.filter(
+const occupiedSlots =
+  6 +
+  bookings.filter(
     (booking) => booking.status === "Active"
   ).length;
+
+const studentBookings = bookings.filter(
+  (booking) => booking.userRole === "Student"
+).length;
+
+const facultyBookings = bookings.filter(
+  (booking) => booking.userRole === "Faculty"
+).length;
+
+const visitorBookings = bookings.filter(
+  (booking) => booking.userRole === "Visitor"
+).length;
+
+const visitorRevenue = bookings
+  .filter(
+    (booking) =>
+      booking.userRole === "Visitor" &&
+      booking.paymentStatus === "Paid (Demo)"
+  )
+  .reduce((total, booking) => total + (booking.amount || 0), 0);
 
   const availableSlots = totalSlots - occupiedSlots;
 
@@ -77,6 +99,35 @@ function AdminDashboard({ bookings }) {
               <div className={`w-fit rounded-xl p-3 ${stat.bg}`}>
                 <Icon className={stat.color} size={25} />
               </div>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+  <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <p className="text-sm text-slate-500">Student Bookings</p>
+    <h2 className="mt-2 text-3xl font-bold text-blue-600">
+      {studentBookings}
+    </h2>
+  </div>
+
+  <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <p className="text-sm text-slate-500">Faculty Bookings</p>
+    <h2 className="mt-2 text-3xl font-bold text-purple-600">
+      {facultyBookings}
+    </h2>
+  </div>
+
+  <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <p className="text-sm text-slate-500">Visitor Bookings</p>
+    <h2 className="mt-2 text-3xl font-bold text-orange-600">
+      {visitorBookings}
+    </h2>
+  </div>
+
+  <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <p className="text-sm text-slate-500">Visitor Revenue</p>
+    <h2 className="mt-2 text-3xl font-bold text-green-600">
+      ₹{visitorRevenue}
+    </h2>
+  </div>
+</div>
 
               <p className="mt-4 text-sm text-slate-500">
                 {stat.title}
